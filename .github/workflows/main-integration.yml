@@ -57,13 +57,16 @@ jobs:
       - name: Build Docker Image
         run: |
           RELEASE_TAG=${{ steps.gitversion.outputs.semVer }}
-          docker build --build-arg release_version=$RELEASE_TAG --platform linux/arm64/v8 -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:$RELEASE_TAG .
+          docker build --build-arg release_version=$RELEASE_TAG -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:latest -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:$RELEASE_TAG .
+          docker build --build-arg release_version=$RELEASE_TAG --platform linux/arm64/v8 -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:arm64v8-latest -t ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:arm64v8-$RELEASE_TAG .
 
       - name: Publish Docker image
         run: |
           RELEASE_TAG=${{ steps.gitversion.outputs.semVer }}
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:latest
           docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:$RELEASE_TAG
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:arm64v8-latest
+          docker push ${{ secrets.DOCKERHUB_USERNAME }}/eureka-discovery-server:arm64v8-$RELEASE_TAG
           echo "Pushed Docker Images with New Release"
 
       - name: Upgrading Version
